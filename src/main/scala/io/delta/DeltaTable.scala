@@ -22,6 +22,7 @@ import org.apache.hadoop.fs.Path
 
 import org.apache.spark.annotation.InterfaceStability._
 import org.apache.spark.sql._
+import org.apache.spark.sql.catalyst.analysis.EliminateSubqueryAliases
 
 /**
  * :: Evolving ::
@@ -96,6 +97,38 @@ class DeltaTable (df: Dataset[Row]) extends DeltaTableOperations {
   def delete(): Unit = {
     executeDelete(None)
   }
+
+  /**
+   * :: Evolving ::
+   *
+   * Get the history of operations on the table.
+   *
+   * @param limit The number of previous commands to get history for
+   *
+   * @since 0.3.0
+   */
+  @Evolving
+  def history(limit: Int): DataFrame = {
+    executeHistory(Some(limit))
+  }
+
+  /**
+   * :: Evolving ::
+   *
+   * Get the history of operations on the table.
+   *
+   * @since 0.3.0
+   */
+  @Evolving
+  def history(): DataFrame = {
+    executeHistory(None)
+  }
+
+  protected lazy val deltaLog = (EliminateSubqueryAliases(df.queryExecution.analyzed) match {
+    case DeltaFullTable(tahoeFileIndex) =>
+      tahoeFileIndex
+  }).deltaLog
+
 }
 
 /**

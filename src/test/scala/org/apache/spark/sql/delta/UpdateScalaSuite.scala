@@ -63,13 +63,6 @@ class UpdateScalaSuite extends UpdateSuiteBase {
       target: String,
       set: String,
       where: String = null): Unit = {
-    executeUpdate(target, set.split(","), where)
-  }
-
-  override protected def executeUpdate(
-      target: String,
-      set: Seq[String],
-      where: String): Unit = {
 
     def parse(tableNameWithAlias: String): (String, Option[String]) = {
       tableNameWithAlias.split(" ").toList match {
@@ -102,16 +95,15 @@ class UpdateScalaSuite extends UpdateSuiteBase {
       optionalAlias.map(table.as(_)).getOrElse(table)
     }
 
-    val setColumns = set.map { assign =>
-      val kv = assign.split("=")
-      require(kv.size == 2)
-      kv(0).trim -> kv(1).trim
-    }.toMap
+    val setColumns =
+      set.split(", ").map {assign =>
+        (assign.split(" = ").apply(0), assign.split(" = ").apply(1))}
+    val setCols = setColumns.map {case (col, expr) => col -> expr}.toMap
 
     if (where == null) {
-      deltaTable.updateExpr(setColumns)
+      deltaTable.updateExpr(setCols)
     } else {
-      deltaTable.updateExpr(where, setColumns)
+      deltaTable.updateExpr(where, setCols)
     }
   }
 }
