@@ -1,4 +1,4 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+[<!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 # Delta Transaction Log Protocol
 
@@ -1279,3 +1279,4 @@ Checkpoint schema (just the `add` column):
 |    |    |    |-- col-b96921f0-2329-4cb3-8d79-184b2bdab23b: long
 |    |    |    |-- col-04ee4877-ee53-4cb9-b1fb-1a4eb74b508c: long
 ```
+](https://github.com/delta-io/delta/pull/1056)
